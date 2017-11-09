@@ -1,0 +1,1 @@
+cast.d: ../cast.c

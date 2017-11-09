@@ -1,0 +1,68 @@
+
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <openssl/md5.h>
+#include "gmp.h"
+
+void sign(unsigned char hash, mpz_t d, mpz_t n)
+	{
+
+	}
+
+int main(int argc, char* argv[])
+{
+	char* filename;
+	char* privatekey;
+	if(argc < 3)
+		{
+			printf("nombre insuffisant d'arguments\n");
+			exit(-1);
+		}
+	filename= argv[1];
+	privatekey = argv[2];
+	FILE *f;
+	f = fopen(filename,"r");
+	if(f == NULL)
+	{
+		fputs("Echec du chargement de la clef!\n",stderr);
+		exit(-1);
+	}
+
+	//Retrieve the size of the file
+	struct stat file_status;
+	char *file_buffer = NULL;
+	stat(filename, &file_status);
+	long file_size = file_status.st_size;
+	file_buffer = (char *)malloc(file_size); //Allocate memory for the buffer using the size of the file
+	fread(file_buffer,1,file_size,f);
+	fclose(f);
+	unsigned char hash[MD5_DIGEST_LENGTH];
+	MD5(file_buffer, strlen(file_buffer), hash);
+	for(int i = 0; i < MD5_DIGEST_LENGTH; i++)
+	{
+	  hash[i] = tolower(hash[i]);
+	}
+	f = fopen("key.pub","r");
+	if(f == NULL)
+		{
+			fputs("Echec du chargement de la clef!\n",stderr);
+			exit(-1);
+		}
+	stat("key.pub", &file_status);
+	file_buffer = NULL;
+	file_size = file_status.st_size;
+	file_buffer = (char *)malloc(file_size);
+	char *tok = NULL;
+	fread(file_buffer,1,file_size,f);
+	fclose(f);
+	tok = strtok(file_buffer, "\n");
+	while (tok) {
+	        printf("Token: %s\n", tok);
+	        tok = strtok(NULL, " ");
+	  }
+	//sign(hash,d,n);
+
+}

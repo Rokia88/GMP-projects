@@ -1,0 +1,1 @@
+parite.d: ../parite.c

@@ -1,0 +1,1 @@
+endianness.d: ../endianness.c
